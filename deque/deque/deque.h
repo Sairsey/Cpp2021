@@ -4,44 +4,65 @@
 #include <exception>
 #include "MemoryHeapStrategy.h" // as default
 
+
+/*!
+  \brief Deque class
+  \author Vladimir Parusov
+  \version 1.0
+  \see DequeIterator, ConstDequeIterator
+  \tparam ValueType type of stored values
+  \tparam MemoryStrategyType strategy of memory allocation
+*/
 template<class ValueType, class MemoryStrategyType = MemoryHeapStrategy>
 class Deque
 {
   private:
-    // element of deque
+    
+    /*! structure that represents an element of Deque. */
     struct DequeElement
     {
-      ValueType Value;
-      DequeElement *Next;
-      DequeElement *Prev;
+      ValueType Value;       /*!< Stored Value */
+      DequeElement *Next;    /*!< Pointer on next element in deque (may be nullptr) */
+      DequeElement *Prev;    /*!< Pointer on previous element in deque (may be nullptr) */
     };
 
-    DequeElement *Head;
-    DequeElement *Tail;
+    DequeElement *Head; /*!< Pointer on first element in deque (may be nullptr if Deque is empty) */
+    DequeElement *Tail; /*!< Pointer on last element in deque (may be nullptr if Deque is empty) */
 
-    MemoryStrategyType Allocator;
+    MemoryStrategyType Allocator; /*!< Memory allocator which chosen by template */
 
   public:
 
-    // iterator
+    /*!
+      \brief Default Iterator for Deque
+      \warning Because i think range-for are cool
+    */
     class DequeIterator
     {
     public:
+
+      /*! Default constructor for DequeIterator */
       DequeIterator() : CurrentNode(Head)
       {
       }
 
+      /*! Constructor from pointer on DequeElement 
+       * \param[in] Node - pointer on element we want to build Iterator from
+       */
       DequeIterator(DequeElement* Node) : CurrentNode(Node)
       {
       }
 
+      /*! Operator= from from pointer on DequeElement 
+       * \param[in] Node - pointer on element we want to build Iterator from
+       */
       DequeIterator& operator=(DequeElement* Node)
       {
         this->CurrentNode = Node;
         return *this;
       }
 
-      // Prefix ++ overload
+      /*! Prefix ++ overload */
       DequeIterator& operator++()
       {
         if (CurrentNode)
@@ -49,7 +70,7 @@ class Deque
         return *this;
       }
 
-      // Postfix ++ overload
+      /*! Postfix ++ overload */
       DequeIterator operator++(int)
       {
         DequeIterator iterator = *this;
@@ -57,39 +78,54 @@ class Deque
         return iterator;
       }
 
+      /*! Comparison operator.
+       * \param[in] iterator - Operator we want to compare with
+       * \return false if equals, true otherwise
+       */
       bool operator!=(const DequeIterator& iterator)
       {
         return CurrentNode != iterator.CurrentNode;
       }
 
+      /*! Operator *.
+       * \return reference on Value this iterator represents
+       */
       ValueType & operator*()
       {
         return CurrentNode->Value;
       }
-
     private:
-      DequeElement* CurrentNode;
+      DequeElement* CurrentNode; /*!< Pointer on DequeElement this iterator represents */
     };
 
-    // const iterator
+    /*!
+     \brief Const Iterator for Deque
+     */
     class ConstDequeIterator
     {
     public:
+      /*! Default constructor for DequeIterator */
       ConstDequeIterator() : CurrentNode(Head)
       {
       }
 
+      /*! Constructor from pointer on DequeElement
+       * \param[in] Node - pointer on element we want to build Iterator from
+       */
       ConstDequeIterator(const DequeElement* Node) : CurrentNode(Node)
       {
       }
 
+      /*! Operator= from from pointer on DequeElement
+       * \param[in] Node - pointer on element we want to build Iterator from
+       */
       ConstDequeIterator& operator=(DequeElement* Node)
       {
         this->CurrentNode = Node;
         return *this;
       }
 
-      // Prefix ++ overload
+      /*! Prefix ++ overload */
       ConstDequeIterator& operator++()
       {
         if (CurrentNode)
@@ -97,7 +133,7 @@ class Deque
         return *this;
       }
 
-      // Postfix ++ overload
+      /*! Postfix ++ overload */
       ConstDequeIterator operator++(int)
       {
         ConstDequeIterator iterator = *this;
@@ -105,64 +141,85 @@ class Deque
         return iterator;
       }
 
+      /*! Comparison operator.
+       * \param[in] iterator - Operator we want to compare with
+       * \return false if equals, true otherwise
+       */
       bool operator!=(const ConstDequeIterator& iterator)
       {
         return CurrentNode != iterator.CurrentNode;
       }
 
+      /*! Operator *.
+       * \return reference on Value this iterator represents
+       */
       const ValueType & operator*()
       {
         return CurrentNode->Value;
       }
 
     private:
-      const DequeElement* CurrentNode;
+      const DequeElement* CurrentNode; /*!< Pointer on DequeElement this iterator represents */
     };
 
-    // begin() for iterators
+    /*! function begin for iterator support
+     * \return DequeIterator that represents first element
+     */
     DequeIterator begin()
     {
       return DequeIterator(Head);
     }
 
-    // end() for iterators
+    /*! function end for iterator support
+     * \return DequeIterator that represents element after last
+     */
     DequeIterator end()
     {
       return DequeIterator(nullptr);
     }
 
-    // const begin() for iterators
-    ConstDequeIterator begin() const
+    /*! function cbegin for const iterator support
+     * \return ConstDequeIterator that represents first element
+     */
+    ConstDequeIterator cbegin() const
     {
       return ConstDequeIterator(Head);
     }
 
-    // const end() for iterators
-    ConstDequeIterator end() const
+    /*! function cend for const iterator support
+     * \return ConstDequeIterator that represents last element
+     */
+    ConstDequeIterator cend() const
     {
       return ConstDequeIterator(nullptr);
     }
 
-    // default constructor
+    /*! Default constructor for Deque */
     Deque() : Head(nullptr), Tail(nullptr)
     {
     }
 
-    // constructor from initializer_list
+    /*! Constructor from initializer_list
+     *  \param[in] List initializer list from template ValueType 
+     */
     Deque(std::initializer_list<ValueType> List) : Head(nullptr), Tail(nullptr)
     {
       for (auto &i : List)
         PushTail(i);
     }
 
-    // copy constructor
+    /*! Copy constructor
+     *  \param[in] Other const reference on lvalue element
+     */
     Deque(Deque const & Other) : Head(nullptr), Tail(nullptr)
     {
       for (auto & i : Other)
         PushTail(i);
     }
 
-    // move constructor
+    /*! Move constructor
+     *  \param[in] Other rvalue reference on rvalue element
+     */
     Deque(Deque && Other) : Head(nullptr), Tail(nullptr)
     {
       this->Head = Other.Head;
@@ -171,7 +228,9 @@ class Deque
       Other.Tail = nullptr;
     }
 
-    // copy operator=
+    /*! Copy operator=
+     *  \param[in] Other const reference on lvalue element
+     */
     Deque & operator=(Deque const & Other)
     {
       for (auto & i : Other)
@@ -179,7 +238,9 @@ class Deque
       return *this;
     }
 
-    // move operator=
+    /*! Move operator=
+     *  \param[in] Other rvalue reference on rvalue element
+     */
     Deque & operator=(Deque && Other)
     {
       Clear();
@@ -190,17 +251,15 @@ class Deque
       return *this;
     }
 
-    // destructor
+    /*! Destructor */
     ~Deque()
     {
       Clear();
     }
 
-    ///
-    /// Operations
-    ///
-
-    // peek in head
+    /*! Method to see what first element is. Cannot be modified.
+     *  \returns const reference on element
+     */
     ValueType const & PeekHead(void) const
     {
       if (!Head)
@@ -208,7 +267,9 @@ class Deque
       return Head->Value;
     }
 
-    // peek in tail
+    /*! Method to see what last element is. Cannot be modified.
+     *  \returns const reference on element
+     */
     ValueType const & PeekTail(void) const
     {
       if (!Tail)
@@ -216,7 +277,29 @@ class Deque
       return Tail->Value;
     }
 
-    // push in head
+    /*! Method to get first element. Can be modified.
+     *  \returns reference on element
+     */
+    ValueType & GetHead(void) const
+    {
+      if (!Head)
+        throw std::exception("Cannot Get Head if Deque empty");
+      return Head->Value;
+    }
+
+    /*! Method to get last element. Can be modified.
+     *  \returns reference on element
+     */
+    ValueType & GetTail(void) const
+    {
+      if (!Tail)
+        throw std::exception("Cannot Peek Tail if Deque empty");
+      return Tail->Value;
+    }
+
+    /*! Method put element to begin of deque. Using copy semantics
+     *  \param[in] Element const reference on element(lvalue)
+     */
     void PushHead(ValueType const &Element)
     {
       DequeElement *tmp = (DequeElement *)Allocator.alloc(sizeof(DequeElement));
@@ -233,7 +316,9 @@ class Deque
         Tail = Head;
     }
 
-    // push in tail
+    /*! Method put element to end of deque. Using copy semantics
+     *  \param[in] Element const reference on element(lvalue)
+     */
     void PushTail(ValueType const &Element)
     {
       DequeElement *tmp = (DequeElement *)Allocator.alloc(sizeof(DequeElement));
@@ -250,7 +335,45 @@ class Deque
         Head = Tail;
     }
 
-    // pop from head
+    /*! Method put element to begin of deque. Using move semantics
+     *  \param[in] Element rvalue reference on element
+     */
+    void PushHead(ValueType &&Element)
+    {
+      DequeElement *tmp = (DequeElement *)Allocator.alloc(sizeof(DequeElement));
+      tmp->Value = std::move(Element);
+      tmp->Next = Head;
+      tmp->Prev = nullptr;
+
+      if (Head != nullptr)
+        Head->Prev = tmp;
+
+      Head = tmp;
+
+      if (Tail == nullptr)
+        Tail = Head;
+    }
+
+    /*! Method put element to end of deque. Using move semantics
+     *  \param[in] Element rvalue reference on element
+     */
+    void PushTail(ValueType &&Element)
+    {
+      DequeElement *tmp = (DequeElement *)Allocator.alloc(sizeof(DequeElement));
+      tmp->Value = std::move(Element);
+      tmp->Next = nullptr;
+      tmp->Prev = Tail;
+
+      if (Tail != nullptr)
+        Tail->Next = tmp;
+
+      Tail = tmp;
+
+      if (Head == nullptr)
+        Head = Tail;
+    }
+
+    /*! Method to remove first element from deque. */
     void PopHead(void)
     {
       if (Head == nullptr)
@@ -266,7 +389,7 @@ class Deque
         Head->Prev = nullptr;
     }
 
-    // pop from tail
+    /*! Method to remove first element from deque. */
     void PopTail(void)
     {
       if (Tail == nullptr)
@@ -282,7 +405,10 @@ class Deque
         Tail->Next = nullptr;
     }
 
-    // move concatinate
+    /*! Method to concatinate to Deques together. Using move semantics.
+     * \param[in] Other rvalue reference on other element
+     * \returns refernece on self
+     */
     Deque & Concatinate(Deque && Other)
     {
       if (Tail == nullptr)
@@ -305,7 +431,10 @@ class Deque
       return *this;
     }
 
-    // copy concatinate
+    /*! Method to concatinate to Deques together. Using copy semantics.
+     * \param[in] Other const reference on other element
+     * \returns refernece on self
+     */
     Deque & Concatinate(const Deque &Other)
     {
       for (auto &i : Other)
@@ -313,7 +442,7 @@ class Deque
       return *this;
     }
 
-    // clear
+    /*! Method to clear deque. */
     void Clear(void)
     {
       if (Head == nullptr)
@@ -323,7 +452,9 @@ class Deque
         PopHead();
     }
 
-    // IsEmpty
+    /*! Method for checking if deque is empty
+     * \returns true if empty, false otherwise
+     */
     bool IsEmpty(void)
     {
       return Head == nullptr;
