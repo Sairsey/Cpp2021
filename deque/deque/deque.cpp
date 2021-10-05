@@ -45,12 +45,21 @@ int main()
   // check PeekTail
   std::cout << deque6.PeekTail() << std::endl;
 
-  // check PushHead
+  // check PushHead with move semantic
   deque3.PushHead(30);
   printDeque(deque3);
 
-  // check PushTail
+  // check PushTail with move semantic
   deque4.PushTail(47);
+  printDeque(deque4);
+
+  // check PushHead with copy semantic
+  int a = 30;
+  deque3.PushHead(a);
+  printDeque(deque3);
+
+  // check PushTail with copy semantic
+  deque4.PushTail(a);
   printDeque(deque4);
 
   // check PopHead

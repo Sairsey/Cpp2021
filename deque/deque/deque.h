@@ -178,18 +178,18 @@ class Deque
       return DequeIterator(nullptr);
     }
 
-    /*! function cbegin for const iterator support
+    /*! function begin for const iterator support
      * \return ConstDequeIterator that represents first element
      */
-    ConstDequeIterator cbegin() const
+    ConstDequeIterator begin() const
     {
       return ConstDequeIterator(Head);
     }
 
-    /*! function cend for const iterator support
+    /*! function end for const iterator support
      * \return ConstDequeIterator that represents last element
      */
-    ConstDequeIterator cend() const
+    ConstDequeIterator end() const
     {
       return ConstDequeIterator(nullptr);
     }
@@ -280,7 +280,7 @@ class Deque
     /*! Method to get first element. Can be modified.
      *  \returns reference on element
      */
-    ValueType & GetHead(void) const
+    ValueType & GetHead(void)
     {
       if (!Head)
         throw std::exception("Cannot Get Head if Deque empty");
@@ -290,7 +290,7 @@ class Deque
     /*! Method to get last element. Can be modified.
      *  \returns reference on element
      */
-    ValueType & GetTail(void) const
+    ValueType & GetTail(void)
     {
       if (!Tail)
         throw std::exception("Cannot Peek Tail if Deque empty");
