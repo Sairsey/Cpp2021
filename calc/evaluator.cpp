@@ -28,7 +28,7 @@ double evaluator::eval(token_queue rpn_queue)
       evaluation_stack.pop();
       token_number *a_num = (token_number *)a;
       
-      a_num->value = functions[tmp->name].func(a_num->value);
+      a_num->value = functions[tmp->name](a_num->value);
 
       evaluation_stack.push(a);
     }
@@ -63,7 +63,7 @@ double evaluator::eval(token_queue rpn_queue)
         token_number* a_num = (token_number*)a;
         token_number* b_num = (token_number*)b;
 
-        a_num->value = operations[op->symbol].func(b_num->value, a_num->value);
+        a_num->value = operations[op->symbol](b_num->value, a_num->value);
 
         evaluation_stack.push(a);
       }

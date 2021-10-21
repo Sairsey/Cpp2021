@@ -1,10 +1,5 @@
 #include "parser.h"
 
-void parser::cleanQueue(void)
-{
-  std::swap(rns_queue, token_queue());
-}
-
 // Get priority of operator
 int parser::getPrior(token *op)
 {
@@ -141,7 +136,7 @@ parser::state_t parser::doDone(token* t, token_stack& numbers, token_stack& oper
 
 token_queue& parser::parse(token_queue tokens)
 {
-  cleanQueue();
+  std::swap(rns_queue, token_queue());
   token *t;
   token_stack numbers, oper;
   state_t state = STATE_PREFIX;

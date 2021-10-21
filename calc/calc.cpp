@@ -9,10 +9,10 @@ calc::calc(void) : eval()
   unary_table functions = plugins.dll_unary_table;
 
   // edit data
-  operations["+"].func = [](double a, double b) -> double {return a + b; };
-  operations["-"].func = [](double a, double b) -> double {return a - b; };
-  operations["*"].func = [](double a, double b) -> double {return a * b; };
-  operations["/"].func = [](double a, double b) -> double {return a / b; };
+  operations["+"] = [](double a, double b) -> double {return a + b; };
+  operations["-"] = [](double a, double b) -> double {return a - b; };
+  operations["*"] = [](double a, double b) -> double {return a * b; };
+  operations["/"] = [](double a, double b) -> double {return a / b; };
 
   // set operations
   eval.set_op(operations, functions);

@@ -4,18 +4,27 @@
 
 #include "token.h"
 
+/*!
+  \brief Scanner and allocator of tokens.
+  \author Vladimir Parusov
+  \version 1.0
+  \see calc, token
+*/
 class scanner
 {
   private:
-    token_queue my_queue;
+    token_queue my_queue; //!< resulting queue
   public:
 
-  // scan string and translate it to token_queue
+  /*! Scan string and translate it to token_queue
+   * \param[in] expression - string we want to translate
+   * \return queue of tokens
+   */
   token_queue& scan(const std::string& expression);
 
-  // clean memory
+  //! Clean allocated memory
   void cleanQueue(void);
 
-  // Destructor
+  //! Destructor
   ~scanner();
 };
