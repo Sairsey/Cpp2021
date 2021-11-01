@@ -14,6 +14,9 @@ calc::calc(void) : eval()
   operations["*"] = [](double a, double b) -> double {return a * b; };
   operations["/"] = [](double a, double b) -> double {return a / b; };
 
+  // unary minus
+  functions["@"] = [](double a) -> double {return -a; };
+
   // set operations
   eval.set_op(operations, functions);
 }

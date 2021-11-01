@@ -9,22 +9,55 @@ void scanner::cleanQueue(void)
   }
 }
 
+void scanner::scanNumber(void)
+{
+  token_number *T = new DEBUG_NEW_PLACEMENT token_number;
+  std::string::size_type new_index;
+  T->value = std::stod(my_expression.substr(expression_index), &new_index);
+  my_queue.push(T);
+  expression_index += new_index;
+}
+
+void scanner::scanOperation(void)
+{
+  token_operation * T = new DEBUG_NEW_PLACEMENT token_operation;
+  T->symbol = my_expression[expression_index++];
+  my_queue.push(T);
+}
+
+void scanner::scanFunction(void)
+{
+  char buf[300] = { 0 };
+  int i = 0;
+  do
+  {
+    if (i < 300 - 1)
+      buf[i++] = my_expression[expression_index];
+    expression_index++;
+  } while (isalpha(my_expression[expression_index]));
+
+  token_function* T = new DEBUG_NEW_PLACEMENT token_function;
+  T->name = buf;
+  my_queue.push(T);
+}
+
 /* Scan Queue from string */
 token_queue &scanner::scan(const std::string &expression)
 {
   if (my_queue.size() != 0)
     cleanQueue();
 
-  int index = 0;
-  while (index < expression.size()) 
+  my_expression = expression;
+  expression_index = 0;
+  while (expression_index < my_expression.size())
   {
     /* Remove spaces */
-    if (isspace(expression[index])) 
+    if (isspace(my_expression[expression_index]))
     {
-      index++;
+      expression_index++;
       continue;
     }
-    switch (expression[index]) 
+    switch (my_expression[expression_index])
     {
       case '0':
       case '1':
@@ -37,14 +70,8 @@ token_queue &scanner::scan(const std::string &expression)
       case '8':
       case '9':
       case '.':
-      {
-        token_number *T = new token_number;
-        std::string::size_type new_index;
-        T->value = std::stod(expression.substr(index), &new_index);
-        my_queue.push(T);
-        index += new_index;
+        scanNumber();
         break;
-      }
       case '+':
       case '-':
       case '*':
@@ -52,29 +79,14 @@ token_queue &scanner::scan(const std::string &expression)
       case '^':
       case '(':
       case ')':
-      {
-        token_operation * T = new token_operation;
-        T->symbol = expression[index++];
-        my_queue.push(T);
+        scanOperation();
         break;
-      }
       default:
       {
         /* Read symbols */
-        if (isalpha(expression[index])) 
+        if (isalpha(my_expression[expression_index])) 
         {
-          char buf[300] = { 0 };
-          int i = 0;
-          do 
-          {
-            if (i < 300 - 1) 
-              buf[i++] = expression[index];
-            index++;
-          } while (isalpha(expression[index]));
-
-          token_function* T = new token_function;
-          T->name = buf;
-          my_queue.push(T);
+          scanFunction();
           break;
         }
         /* if unknown symbol */

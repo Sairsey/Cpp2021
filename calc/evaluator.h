@@ -16,6 +16,25 @@ private:
   binary_table operations;
   //! Table which stores all known unary functions
   unary_table functions;
+
+  //! Stack used for evaluation
+  token_stack evaluation_stack;
+
+  //! Helper function to process Numbers
+  void processNumber(token_number *t);
+
+  //! Helper function to process operations
+  void processOperation(token_operation *t);
+
+  //! Helper function to process functions
+  void processFunction(token_function *t);
+
+  //! Helper function to process elements from unary_table
+  void processUnary(std::string &symbol);
+
+  //! Helper function to process elements from binary_table
+  void processBinary(std::string &symbol);
+
 public:
   /*! Set table of operations and functions
    * \param[in] op - table with binary operations

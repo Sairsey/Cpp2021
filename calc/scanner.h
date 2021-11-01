@@ -13,7 +13,13 @@
 class scanner
 {
   private:
+    std::string my_expression;
+    int expression_index;
     token_queue my_queue; //!< resulting queue
+
+    void scanNumber(void);
+    void scanOperation(void);
+    void scanFunction(void);
   public:
 
   /*! Scan string and translate it to token_queue

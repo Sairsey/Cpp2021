@@ -6,11 +6,11 @@
 #include <sstream>
 #include "calc.h"
 
-int main(int argc, char* argv[]) {
+int mainLoop(void)
+{
   calc calc;
   std::string string;
   double rez = 0;
-
   while (true)
   {
     int i = 0;
@@ -48,6 +48,12 @@ int main(int argc, char* argv[]) {
       printf("ERROR : %s\n", ex.what());
     }
   }
-  _CrtDumpMemoryLeaks();
   return 0;
+}
+
+#include <stdlib.h>
+int main(int argc, char* argv[]) {
+  int res = mainLoop();
+  _CrtDumpMemoryLeaks();
+  return res;
 }

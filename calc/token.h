@@ -18,6 +18,8 @@ struct token
     token_type_operation, //!< token which represents operation
     token_type_function   //!< token which represents function
   } type; //!< type of current token
+
+  virtual ~token() = default;
 };
 
 /*!
@@ -35,6 +37,8 @@ struct token_number : public token
   {
     type = token_type_number;
   }
+
+  virtual ~token_number() = default;
 };
 
 /*!
@@ -45,13 +49,16 @@ struct token_number : public token
 */
 struct token_operation : public token
 {
-  std::string symbol; //!< symbol that this operation have
+  std::string symbol;    //!< symbol that this operation have
+  bool is_unary = false; //!< true for unary operations
 
   //! default constructor which just fill fields in base token
   token_operation()
   {
     type = token_type_operation;
   }
+
+  virtual ~token_operation() = default;
 };
 
 /*!
@@ -69,9 +76,17 @@ struct token_function : public token
   {
     type = token_type_function;
   }
+
+  virtual ~token_function() = default;
 };
 
 //! Queue of pointer on tokens
 using token_queue = std::queue<token *>;
 //! Stack of pointer on tokens
 using token_stack = std::stack<token *>;
+
+#ifdef _DEBUG
+#define DEBUG_NEW_PLACEMENT (_NORMAL_BLOCK, __FILE__, __LINE__)
+#else
+#define DEBUG_NEW_PLACEMENT
+#endif

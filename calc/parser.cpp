@@ -76,6 +76,7 @@ parser::state_t parser::doPrefix(token* t, token_stack& numbers, token_stack& op
     }
     else if (tmp->symbol == "-") {
       tmp->symbol = '@';
+      tmp->is_unary = true;
       oper.push(t);
     }
     else
@@ -119,7 +120,7 @@ parser::state_t parser::doPostfix(token* t, token_stack& numbers, token_stack& o
 
 parser::state_t parser::doDone(token* t, token_stack& numbers, token_stack& oper)
 {
-  token_operation *tmp = new token_operation;
+  token_operation *tmp = new DEBUG_NEW_PLACEMENT token_operation;
   tmp->symbol = ')';
   sendOperators(tmp, numbers, oper);
   if (!oper.empty()) {
