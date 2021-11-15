@@ -114,4 +114,9 @@ public:
   {
     return wrapper->execute(args, NumberOfElements);
   }
+
+  ~Wrapper()
+  {
+	delete this->wrapper;
+  }
 };
