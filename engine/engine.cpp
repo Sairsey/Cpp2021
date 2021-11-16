@@ -18,7 +18,47 @@ int main(void)
   Engine engine;
   engine.register_command(&wrap, "command1");
   engine.register_command(&wrap, "command2");
-  std::cout << engine.execute("command1", { {"arg1", 4}, {"arg2", 5} }) << std::endl;
-  std::cout << engine.execute("command2", { {"arg2", 30}, {"arg1", 123} }) << std::endl;
+  // test if runnable
+  try
+  {
+    std::cout << engine.execute("command1", { {"arg1", 4}, {"arg2", 5} }) << std::endl;
+  }
+  catch (std::exception &ex)
+  {
+    std::cout << std::string("ERROR: ") + ex.what() << std::endl;
+  }
 
+  // test inverted arguments
+  try
+  {
+    std::cout << engine.execute("command2", { {"arg2", 30}, {"arg1", 123} }) << std::endl;
+  }
+  catch (std::exception &ex)
+  {
+    std::cout << std::string("ERROR: ") + ex.what() << std::endl;
+  }
+
+  // test too much arguments
+  try
+  {
+    std::cout << engine.execute("command1", { {"arg1", 30}, {"arg2", 123}, {"arg3", 33}}) << std::endl;
+  }
+  catch (std::exception &ex)
+  {
+    if (std::string(ex.what()) == "Invalid amount of arguments")
+      std::cout << "(Correct error catched) ";
+    std::cout << std::string("ERROR: ") + ex.what() << std::endl;
+  }
+
+  // test if unknown argument
+  try
+  {
+    std::cout << engine.execute("command1", { {"arg1", 30}, {"arg3", 123} }) << std::endl;
+  }
+  catch (std::exception &ex)
+  {
+    if (std::string(ex.what()) == "Unknown argument arg3")
+      std::cout << "(Correct error catched) ";
+    std::cout << std::string("ERROR: ") + ex.what() << std::endl;
+  }
 }

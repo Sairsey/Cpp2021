@@ -68,7 +68,12 @@ public:
   {
     // incorrect size - error
     if (NumberOfElements != N)
-      throw "error";
+      throw std::exception("Invalid amount of arguments");
+
+    // check if all params are correct
+    for (int i = 0; i < NumberOfElements; i++)
+      if (FindMap.find(args[i].first) == FindMap.end())
+        throw std::exception(("Unknown argument " + args[i].first).c_str());
 
     // replace all params with that
     for (int i = 0; i < NumberOfElements; i++)
